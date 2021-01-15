@@ -19,9 +19,15 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log('a user has connected')
 
+    // ping from a tracker with updated location information
     socket.on('locationPing', pos => {
         locations.set(socket.id, pos)
         console.log(pos)
+    })
+
+    // request to check for new locations from map
+    socket.on('locationsPing', () => {
+        socket.emit('locationsPong', Array.from(locations))
     })
 
     socket.on('disconnect', () => {
